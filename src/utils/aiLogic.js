@@ -1,11 +1,9 @@
 // src/utils/aiLogic.js
 
 export function getNextSessionRecommendation(lastWorkout) {
-  // For each exercise, if all sets/reps completed, increase weight by 2.5%
   return lastWorkout.exercises.map(ex => {
     let newWeight = Number(ex.weight);
-    // For MVP, assume all sets/reps completed
-    newWeight = Math.round(newWeight * 1.025 * 2) / 2; // round to nearest 0.5
+    newWeight = Math.round(newWeight * 1.025 * 2) / 2;
     return { ...ex, weight: newWeight };
   });
 }
