@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { Container, Box, Typography, TextField, Button, Alert, Card, CardContent, Grid, Paper } from "@mui/material";
+import { Container, Box, Typography, TextField, Button, Alert, Card, CardContent, Grid, Paper, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+
+const experienceOptions = [
+  "Beginner",
+  "Intermediate",
+  "Advanced",
+  "Athlete"
+];
+const sexOptions = ["Male", "Female", "Other"];
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({
@@ -55,25 +63,90 @@ export default function ProfilePage() {
             Profile
           </Typography>
           <Grid container spacing={2}>
-            {[
-              "age",
-              "sex",
-              "height",
-              "weight",
-              "experience",
-              "goalWeight",
-            ].map((field) => (
-              <Grid item xs={12} sm={6} key={field}>
-                <TextField
-                  label={field.charAt(0).toUpperCase() + field.slice(1)}
-                  value={profile[field]}
-                  onChange={e => setProfile({ ...profile, [field]: e.target.value })}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                />
-              </Grid>
-            ))}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Age"
+                value={profile.age}
+                onChange={e => setProfile({ ...profile, age: e.target.value })}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="sex-label" sx={{ color: 'primary.main' }}>Sex</InputLabel>
+                <Select
+                  labelId="sex-label"
+                  value={profile.sex || ""}
+                  label="Sex"
+                  onChange={e => setProfile({ ...profile, sex: e.target.value })}
+                  sx={{
+                    background: '#f5f7fa',
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    color: 'primary.main',
+                    '& .MuiSelect-icon': { color: 'primary.main' },
+                  }}
+                >
+                  {sexOptions.map(option => (
+                    <MenuItem key={option} value={option} sx={{ fontWeight: 600, color: 'primary.dark' }}>{option}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Height"
+                value={profile.height}
+                onChange={e => setProfile({ ...profile, height: e.target.value })}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Weight"
+                value={profile.weight}
+                onChange={e => setProfile({ ...profile, weight: e.target.value })}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Goal Weight"
+                value={profile.goalWeight}
+                onChange={e => setProfile({ ...profile, goalWeight: e.target.value })}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="experience-label" sx={{ color: 'primary.main' }}>Experience</InputLabel>
+                <Select
+                  labelId="experience-label"
+                  value={profile.experience || ""}
+                  label="Experience"
+                  onChange={e => setProfile({ ...profile, experience: e.target.value })}
+                  sx={{
+                    background: '#f5f7fa',
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    color: 'primary.main',
+                    '& .MuiSelect-icon': { color: 'primary.main' },
+                  }}
+                >
+                  {experienceOptions.map(option => (
+                    <MenuItem key={option} value={option} sx={{ fontWeight: 600, color: 'primary.dark' }}>{option}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
           {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
           {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
