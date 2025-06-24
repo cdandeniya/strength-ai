@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { getNextSessionRecommendation } from "../utils/aiLogic";
-import { Container, Box, Typography, Button, Divider, List, ListItem, ListItemText, Alert } from "@mui/material";
+import { Container, Box, Typography, Button, Divider, List, ListItem, ListItemText, Alert, Card, CardContent, Grid, Paper } from "@mui/material";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState({});
@@ -42,39 +42,62 @@ export default function DashboardPage() {
   const totalCalories = todayMeals.reduce((sum, m) => sum + Number(m.calories || 0), 0);
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h4" gutterBottom>Dashboard</Typography>
-        {error && <Alert severity="error">{error}</Alert>}
-        <Typography>Current Weight: {profile.weight} kg</Typography>
-        <Typography>Goal Weight: {profile.goalWeight} kg</Typography>
-        <Typography>Calories Today: {totalCalories} / {calorieTarget}</Typography>
-        <Box sx={{ my: 2 }}>
-          <Button variant="contained" sx={{ mr: 1 }} onClick={() => navigate("/workout-log")}>Log Workout</Button>
-          <Button variant="contained" sx={{ mr: 1 }} onClick={() => navigate("/food-log")}>Log Food</Button>
-          <Button variant="outlined" sx={{ mr: 1 }} onClick={() => navigate("/workout-history")}>Workout History</Button>
-          <Button variant="outlined" onClick={() => navigate("/chat")}>Chat Coach</Button>
-        </Box>
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="h6">Last Workout:</Typography>
-        {lastWorkout ? (
-          <List>
-            <ListItem><ListItemText primary={`Date: ${lastWorkout.date}`} /></ListItem>
-            {lastWorkout.exercises.map((ex, i) => (
-              <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
-            ))}
-          </List>
-        ) : <Typography>No workouts logged yet.</Typography>}
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="h6">AI Recommendation for Next Session:</Typography>
-        {lastWorkout ? (
-          <List>
-            {getNextSessionRecommendation(lastWorkout).map((ex, i) => (
-              <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
-            ))}
-          </List>
-        ) : <Typography>Log a workout to get recommendations.</Typography>}
-      </Box>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h4" gutterBottom fontWeight={700}>Dashboard</Typography>
+        </Grid>
+        {error && (
+          <Grid item xs={12}><Alert severity="error">{error}</Alert></Grid>
+        )}
+        <Grid item xs={12} md={4}>
+          <Card elevation={3} sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h6" color="primary" gutterBottom>Profile</Typography>
+              <Typography>Current Weight: <b>{profile.weight} kg</b></Typography>
+              <Typography>Goal Weight: <b>{profile.goalWeight} kg</b></Typography>
+            </CardContent>
+          </Card>
+          <Card elevation={3}>
+            <CardContent>
+              <Typography variant="h6" color="primary" gutterBottom>Calories Today</Typography>
+              <Typography>{totalCalories} / {calorieTarget}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+            <Typography variant="h6" color="primary" gutterBottom>Quick Actions</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+              <Button variant="contained" color="primary" sx={{ transition: '0.2s', fontWeight: 600 }} onClick={() => navigate("/workout-log")}>Log Workout</Button>
+              <Button variant="contained" color="secondary" sx={{ transition: '0.2s', fontWeight: 600 }} onClick={() => navigate("/food-log")}>Log Food</Button>
+              <Button variant="outlined" sx={{ transition: '0.2s', fontWeight: 600 }} onClick={() => navigate("/workout-history")}>Workout History</Button>
+              <Button variant="outlined" sx={{ transition: '0.2s', fontWeight: 600 }} onClick={() => navigate("/chat")}>Chat Coach</Button>
+            </Box>
+          </Paper>
+          <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+            <Typography variant="h6" color="primary" gutterBottom>Last Workout</Typography>
+            {lastWorkout ? (
+              <List>
+                <ListItem><ListItemText primary={`Date: ${lastWorkout.date}`} /></ListItem>
+                {lastWorkout.exercises.map((ex, i) => (
+                  <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
+                ))}
+              </List>
+            ) : <Typography color="text.secondary">No workouts logged yet.</Typography>}
+          </Paper>
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Typography variant="h6" color="primary" gutterBottom>AI Recommendation for Next Session</Typography>
+            {lastWorkout ? (
+              <List>
+                {getNextSessionRecommendation(lastWorkout).map((ex, i) => (
+                  <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
+                ))}
+              </List>
+            ) : <Typography color="text.secondary">Log a workout to get recommendations.</Typography>}
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 } 

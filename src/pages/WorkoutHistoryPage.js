@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { Container, Box, Typography, List, ListItem, ListItemText, Divider, Alert } from "@mui/material";
+import { Container, Box, Typography, List, ListItem, ListItemText, Divider, Alert, Card, CardContent, Grid, Paper } from "@mui/material";
 
 export default function WorkoutHistoryPage() {
   const [workouts, setWorkouts] = useState([]);
@@ -22,22 +22,24 @@ export default function WorkoutHistoryPage() {
   }, []);
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h5" gutterBottom>Workout History</Typography>
-        {error && <Alert severity="error">{error}</Alert>}
-        <List>
-          {workouts.map((item, idx) => (
-            <React.Fragment key={idx}>
-              <ListItem><ListItemText primary={`Date: ${item.date}`} /></ListItem>
-              {item.exercises.map((ex, i) => (
-                <ListItem key={i} sx={{ pl: 4 }}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
-              ))}
-              <Divider />
-            </React.Fragment>
-          ))}
-        </List>
-      </Box>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Card elevation={3}>
+        <CardContent>
+          <Typography variant="h5" fontWeight={700} color="primary" gutterBottom>Workout History</Typography>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          <List>
+            {workouts.map((item, idx) => (
+              <React.Fragment key={idx}>
+                <ListItem><ListItemText primary={`Date: ${item.date}`} /></ListItem>
+                {item.exercises.map((ex, i) => (
+                  <ListItem key={i} sx={{ pl: 4 }}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
+                ))}
+                <Divider />
+              </React.Fragment>
+            ))}
+          </List>
+        </CardContent>
+      </Card>
     </Container>
   );
 } 
