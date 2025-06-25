@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, getDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
-import { getNextSessionRecommendation } from "../utils/aiLogic";
-import { Container, Box, Typography, Button, List, ListItem, ListItemText, Alert, Card, CardContent, Grid, Paper, Avatar, Grow, Fade } from "@mui/material";
+import { getNextSessionRecommendation, getRandomWorkoutSplit, aiRecommendationInfo } from "../utils/aiLogic";
+import { Container, Box, Typography, Button, List, ListItem, ListItemText, Alert, Card, CardContent, Grid, Paper, Avatar, Grow, Fade, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import BoltIcon from "@mui/icons-material/Bolt";
 import EditIcon from "@mui/icons-material/Edit";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState({});
@@ -17,6 +18,8 @@ export default function DashboardPage() {
   const [calorieTarget, setCalorieTarget] = useState(2000);
   const [error, setError] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [workoutSplit, setWorkoutSplit] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +48,7 @@ export default function DashboardPage() {
       }
     };
     fetchData();
+    setWorkoutSplit(getRandomWorkoutSplit());
   }, []);
 
   const totalCalories = todayMeals.reduce((sum, m) => sum + Number(m.calories || 0), 0);
@@ -143,15 +147,30 @@ export default function DashboardPage() {
                     <CardContent>
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                         <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}><BoltIcon /></Avatar>
-                        <Typography variant="h6" color="info.main" fontWeight={700}>AI Recommendation</Typography>
+                        <Typography variant="h6" color="info.main" fontWeight={700} sx={{ flex: 1 }}>AI Recommendation</Typography>
+                        <IconButton onClick={() => setInfoOpen(true)} color="info" size="small"><InfoOutlinedIcon /></IconButton>
                       </Box>
                       {lastWorkout ? (
                         <List>
-                          {getNextSessionRecommendation(lastWorkout).map((ex, i) => (
-                            <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
+                          {getNextSessionRecommendation(lastWorkout, profile).map((ex, i) => (
+                            <ListItem key={i}>
+                              <ListItemText
+                                primary={ex.name + ': ' + (ex.suggestion ? `${ex.weight}kg (${ex.suggestion})` : `${ex.weight}kg (suggested)`)}
+                              />
+                            </ListItem>
                           ))}
                         </List>
                       ) : <Typography color="text.secondary">Log a workout to get recommendations.</Typography>}
+                      {workoutSplit && (
+                        <Box sx={{ mt: 3 }}>
+                          <Typography variant="subtitle1" fontWeight={700} color="info.main">Suggested Workout: {workoutSplit.name}</Typography>
+                          <List>
+                            {workoutSplit.exercises.map((ex, i) => (
+                              <ListItem key={i}><ListItemText primary={ex} /></ListItem>
+                            ))}
+                          </List>
+                        </Box>
+                      )}
                     </CardContent>
                   </Card>
                 </Fade>
@@ -159,6 +178,15 @@ export default function DashboardPage() {
             </Grid>
           </Grid>
         </Grid>
+        <Dialog open={infoOpen} onClose={() => setInfoOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>How AI Recommendations Work</DialogTitle>
+          <DialogContent>
+            <Typography whiteSpace="pre-line">{aiRecommendationInfo}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setInfoOpen(false)} color="primary">Close</Button>
+          </DialogActions>
+        </Dialog>
         {error && (
           <Box sx={{ mt: 3 }}><Alert severity="error">{error}</Alert></Box>
         )}
