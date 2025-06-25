@@ -1,13 +1,49 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+body, html, #root {
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  background: #f7fafd;
+  color: #222;
+  min-height: 100vh;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  color: #1a237e;
+  margin-top: 0;
+}
+
+button, .MuiButton-root {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.MuiCard-root, .MuiPaper-root {
+  border-radius: 18px !important;
+  box-shadow: 0 2px 16px 0 #e3e8f0 !important;
+}
+
+input, .MuiInputBase-root {
+  border-radius: 8px !important;
+  font-size: 1rem;
+}
+
+.MuiListItem-root {
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #f0f4ff;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfd8dc;
+  border-radius: 8px;
 }
