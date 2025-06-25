@@ -11,23 +11,54 @@ import ChatPage from "./pages/ChatPage";
 import Navigation from "./components/Navigation";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { AnimatePresence, motion } from "framer-motion";
 
-function AppContent({ toggleDarkMode, darkMode }) {
+function AnimatedRoutes({ toggleDarkMode, darkMode }) {
   const location = useLocation();
   const hideNav = location.pathname === "/auth";
   return (
     <>
       {!hideNav && <Navigation toggleDarkMode={toggleDarkMode} darkMode={darkMode} />}
-      <Routes>
-        <Route path="/" element={<Navigate to="/auth" />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/workout-log" element={<WorkoutLogPage />} />
-        <Route path="/workout-history" element={<WorkoutHistoryPage />} />
-        <Route path="/food-log" element={<FoodLogPage />} />
-        <Route path="/chat" element={<ChatPage />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Navigate to="/auth" />} />
+          <Route path="/auth" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <AuthPage />
+            </motion.div>
+          } />
+          <Route path="/profile" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <ProfilePage />
+            </motion.div>
+          } />
+          <Route path="/dashboard" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <DashboardPage />
+            </motion.div>
+          } />
+          <Route path="/workout-log" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <WorkoutLogPage />
+            </motion.div>
+          } />
+          <Route path="/workout-history" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <WorkoutHistoryPage />
+            </motion.div>
+          } />
+          <Route path="/food-log" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <FoodLogPage />
+            </motion.div>
+          } />
+          <Route path="/chat" element={
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }} transition={{ duration: 0.5 }}>
+              <ChatPage />
+            </motion.div>
+          } />
+        </Routes>
+      </AnimatePresence>
     </>
   );
 }
@@ -81,7 +112,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <AppContent toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+        <AnimatedRoutes toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
       </Router>
     </ThemeProvider>
   );

@@ -9,6 +9,7 @@
     "@mui/material": "^7.1.2",
     "cra-template-pwa": "2.0.0",
     "firebase": "^11.9.1",
+    "framer-motion": "^12.19.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
