@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { Container, Box, Typography, TextField, Button, List, ListItem, ListItemText, Alert, Card, CardContent, Grid, Paper, Autocomplete, Select, MenuItem, InputLabel, FormControl, CircularProgress, Stack } from "@mui/material";
+import { collection, addDoc, getDocs, deleteDoc, query, where } from "firebase/firestore";
+import { Container, Box, Typography, TextField, Button, List, ListItem, ListItemText, Alert, Card, CardContent, Grid, Paper, Autocomplete, Select, MenuItem, InputLabel, FormControl, CircularProgress, Stack, IconButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
@@ -52,7 +53,7 @@ export default function FoodLogPage() {
       const mealsRef = collection(db, "users", auth.currentUser.uid, "meals");
       const snap = await getDocs(mealsRef);
       const today = new Date().toISOString().slice(0, 10);
-      setMeals(snap.docs.map(doc => doc.data()).filter(m => m.date === today));
+      setMeals(snap.docs.filter(doc => doc.data().date === today).map(doc => ({ ...doc.data(), id: doc.id })));
     } catch (e) {
       setError("Failed to load meals");
     }
@@ -101,6 +102,15 @@ export default function FoodLogPage() {
     setMeal({ food: "", calories: "", category: "", mealType: "Breakfast" });
     setError("");
     fetchMeals();
+  };
+
+  const removeMeal = async (id) => {
+    try {
+      await deleteDoc(collection(db, "users", auth.currentUser.uid, "meals"), id);
+      setMeals(meals => meals.filter(m => m.id !== id));
+    } catch (e) {
+      setError("Failed to remove meal");
+    }
   };
 
   return (
@@ -186,7 +196,11 @@ export default function FoodLogPage() {
           <Typography variant="h6" fontWeight={700} color="primary" gutterBottom>Today's Meals</Typography>
           <List sx={{ mt: 1 }}>
             {meals.map((item, i) => (
-              <ListItem key={i}>
+              <ListItem key={item.id || i} secondaryAction={
+                <IconButton edge="end" aria-label="delete" onClick={() => removeMeal(item.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              }>
                 <ListItemText primary={`${item.mealType ? item.mealType + ': ' : ''}${item.food}: ${item.calories} kcal`} secondary={item.category ? `Category: ${item.category}` : null} />
               </ListItem>
             ))}
