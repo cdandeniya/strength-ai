@@ -35,7 +35,7 @@ export default function AuthPage() {
     <Container maxWidth="xs">
       <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
-          AI Gym Coach
+          Gym Coach
         </Typography>
         <TextField label="Email" fullWidth margin="normal" value={email} onChange={e => setEmail(e.target.value)} />
         <TextField label="Password" type="password" fullWidth margin="normal" value={password} onChange={e => setPassword(e.target.value)} />

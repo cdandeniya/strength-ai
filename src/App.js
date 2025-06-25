@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider, CssBaseline, createTheme, IconButton } from "@mui/material";
 import AuthPage from "./pages/AuthPage";
@@ -62,6 +62,20 @@ export default function App() {
     }
   });
   const toggleDarkMode = () => setDarkMode(m => !m);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+      document.documentElement.classList.add('dark-mode');
+      const root = document.getElementById('root');
+      if (root) root.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+      document.documentElement.classList.remove('dark-mode');
+      const root = document.getElementById('root');
+      if (root) root.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   return (
     <ThemeProvider theme={theme}>

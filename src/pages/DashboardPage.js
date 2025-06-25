@@ -10,6 +10,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import BoltIcon from "@mui/icons-material/Bolt";
 import EditIcon from "@mui/icons-material/Edit";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { useTheme } from '@mui/material/styles';
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState({});
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [workoutSplit, setWorkoutSplit] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +56,7 @@ export default function DashboardPage() {
   const totalCalories = todayMeals.reduce((sum, m) => sum + Number(m.calories || 0), 0);
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #e3f0ff 100%)', py: 4 }}>
+    <Box sx={{ minHeight: '100vh', background: theme.palette.background.default, py: 4 }}>
       <Container maxWidth="md">
         {/* Profile Section */}
         <Grow in={loaded} timeout={600}>
@@ -67,7 +69,7 @@ export default function DashboardPage() {
                 {profile.name ? profile.name : "Welcome!"}
               </Typography>
               <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
-                Your personal AI-powered fitness dashboard
+                Your personal fitness dashboard
               </Typography>
               <Grid container spacing={2}>
                 <Grid item>
@@ -147,7 +149,7 @@ export default function DashboardPage() {
                     <CardContent>
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                         <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}><BoltIcon /></Avatar>
-                        <Typography variant="h6" color="info.main" fontWeight={700} sx={{ flex: 1 }}>AI Recommendation</Typography>
+                        <Typography variant="h6" color="info.main" fontWeight={700} sx={{ flex: 1 }}>Recommendation</Typography>
                         <IconButton onClick={() => setInfoOpen(true)} color="info" size="small"><InfoOutlinedIcon /></IconButton>
                       </Box>
                       {lastWorkout ? (
@@ -179,7 +181,7 @@ export default function DashboardPage() {
           </Grid>
         </Grid>
         <Dialog open={infoOpen} onClose={() => setInfoOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>How AI Recommendations Work</DialogTitle>
+          <DialogTitle>How Recommendations Work</DialogTitle>
           <DialogContent>
             <Typography whiteSpace="pre-line">{aiRecommendationInfo}</Typography>
           </DialogContent>

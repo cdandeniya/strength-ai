@@ -20,7 +20,7 @@ export default function ChatPage() {
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Card elevation={3}>
         <CardContent>
-          <Typography variant="h5" fontWeight={700} color="primary" gutterBottom>AI Coach Chat</Typography>
+          <Typography variant="h5" fontWeight={700} color="primary" gutterBottom>Coach Chat</Typography>
           <Paper variant="outlined" sx={{ minHeight: 200, maxHeight: 300, overflow: "auto", p: 2, mb: 2, bgcolor: "#f9f9f9" }}>
             <Stack spacing={1}>
               {messages.map((msg, i) => (

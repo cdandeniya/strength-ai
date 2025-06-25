@@ -8,6 +8,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
+import { useTheme } from '@mui/material/styles';
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard" },
@@ -21,16 +22,25 @@ const navItems = [
 export default function Navigation({ toggleDarkMode, darkMode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/auth");
   };
 
+  const handleLogoClick = () => {
+    navigate('/dashboard');
+  };
+
   const drawer = (
     <Box sx={{ width: 220 }} role="presentation" onClick={() => setDrawerOpen(false)}>
-      <Typography variant="h6" sx={{ m: 2, display: "flex", alignItems: "center" }}>
-        <FitnessCenterIcon sx={{ mr: 1 }} /> AI Gym Coach
+      <Typography
+        variant="h6"
+        sx={{ m: 2, display: "flex", alignItems: "center", cursor: 'pointer', color: theme.palette.primary.contrastText }}
+        onClick={handleLogoClick}
+      >
+        <FitnessCenterIcon sx={{ mr: 1, color: theme.palette.primary.contrastText }} /> AI Gym Coach
       </Typography>
       <Divider />
       <List>
@@ -59,10 +69,18 @@ export default function Navigation({ toggleDarkMode, darkMode }) {
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2, display: { xs: "flex", md: "none" } }} onClick={() => setDrawerOpen(true)}>
           <MenuIcon />
         </IconButton>
-        <FitnessCenterIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-        <Typography variant="h6" sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-          AI Gym Coach
-        </Typography>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', mr: 2 }}
+          onClick={handleLogoClick}
+        >
+          <FitnessCenterIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1, color: theme.palette.primary.contrastText }} />
+          <Typography 
+            variant="h6" 
+            sx={{ display: { xs: "none", md: "flex" }, fontWeight: 700, color: theme.palette.primary.contrastText }}
+          >
+            AI Gym Coach
+          </Typography>
+        </Box>
         <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}>
           {navItems.map(item => (
             <Button

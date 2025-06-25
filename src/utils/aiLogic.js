@@ -5,12 +5,12 @@
 // - If not all sets completed, repeat weight
 // - If new exercise, suggest conservative starting weight
 
+// Suggests next session's weights based on last workout and user profile
 export function getNextSessionRecommendation(lastWorkout, userProfile = {}) {
   return lastWorkout.exercises.map(ex => {
-    // Use last set's weight, or average, or fallback
+    // Find last set's weight, or use a default if missing
     let lastSetWeight = 0;
     if (Array.isArray(ex.sets) && ex.sets.length > 0) {
-      // Use last set's weight if available and valid
       const validWeights = ex.sets.map(s => Number(s.weight)).filter(w => !isNaN(w) && w > 0);
       if (validWeights.length > 0) {
         lastSetWeight = validWeights[validWeights.length - 1];
@@ -18,7 +18,7 @@ export function getNextSessionRecommendation(lastWorkout, userProfile = {}) {
     } else if (!isNaN(Number(ex.weight))) {
       lastSetWeight = Number(ex.weight);
     }
-    // If no valid weight, suggest a default
+    // Suggest a starting weight if none found
     if (!lastSetWeight) {
       if (ex.name.toLowerCase().includes("barbell")) return { ...ex, weight: 20, suggestion: "Start light and focus on form" };
       if (ex.name.toLowerCase().includes("dumbbell")) return { ...ex, weight: 5, suggestion: "Start light and focus on form" };
@@ -41,7 +41,7 @@ export function getNextSessionRecommendation(lastWorkout, userProfile = {}) {
   });
 }
 
-// Random workout split generator
+// Example push/pull/legs splits
 const pushExercises = [
   "Barbell Bench Press",
   "Dumbbell Incline Press",
@@ -67,6 +67,7 @@ const legExercises = [
   "Romanian Deadlift"
 ];
 
+// Returns a random workout split (push, pull, or legs)
 export function getRandomWorkoutSplit() {
   const splits = [
     { name: "Push Day", exercises: pushExercises },
@@ -82,8 +83,9 @@ export function getRandomWorkoutSplit() {
   };
 }
 
+// Info text for users about how recommendations are made
 export const aiRecommendationInfo = `
-The AI recommendation uses a research-based progressive overload algorithm:
+This recommendation uses a progressive overload approach:
 - If you completed all sets with good form, it suggests increasing the weight by 2.5-5% (rounded to the nearest 2.5kg for barbell, 1kg for dumbbell, or 1 rep if weight is not increased).
 - If you did not complete all sets, it suggests repeating the same weight next session.
 - For new exercises, it suggests a conservative starting weight (e.g., 50% of bodyweight for compound lifts, 5-10kg for isolation moves).
@@ -96,7 +98,7 @@ References:
 - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5485202/
 `;
 
-// Simple rule-based chat
+// Returns a simple response to user questions in the chat
 export function getSimpleCoachResponse(input) {
   input = input.toLowerCase();
   if (input.includes("bench press")) return "Try increasing your bench press by 2.5% if you completed all sets last time! For barbell lifts, a 2.5kg increase is typical.";
