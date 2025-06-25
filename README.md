@@ -1,6 +1,6 @@
-# AI Gym Coach Web App
+# Strength AI
 
-AI Gym Coach is a modern, full-stack web application that helps users track their fitness journey, log workouts and meals, and receive personalized, research-based workout recommendations. The app features a clean, responsive, and visually appealing UI, with a focus on usability and a premium user experience.
+Strength AI is a modern, full-stack web application that helps users track their fitness journey, log workouts and meals, and receive personalized, research-based workout recommendations. The app features a clean, responsive, and visually appealing UI, with a focus on usability and a premium user experience.
 
 ## Features
 - Secure authentication (sign up/login) with Firebase
