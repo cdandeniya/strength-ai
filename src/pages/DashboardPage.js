@@ -91,93 +91,74 @@ export default function DashboardPage() {
             </Button>
           </Paper>
         </Grow>
-        <Grid container spacing={4}>
-          {/* Profile & Calories */}
-          <Grid item xs={12} md={4}>
-            <Fade in={loaded} timeout={800}>
-              <Card elevation={0} sx={{ borderRadius: 4, p: 2, mb: 3, bgcolor: "#f8fafc", boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}><EmojiEventsIcon /></Avatar>
-                    <Typography variant="h6" color="primary" fontWeight={700}>Profile</Typography>
-                  </Box>
-                  <Typography color="text.secondary">Current Weight</Typography>
-                  <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>{profile.weight} kg</Typography>
-                  <Typography color="text.secondary">Goal Weight</Typography>
-                  <Typography variant="h6" fontWeight={600}>{profile.goalWeight} kg</Typography>
-                </CardContent>
-              </Card>
-            </Fade>
-            <Fade in={loaded} timeout={1000}>
-              <Card elevation={0} sx={{ borderRadius: 4, p: 2, bgcolor: "#f8fafc", boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar sx={{ bgcolor: 'secondary.main', mr: 2 }}><RestaurantIcon /></Avatar>
-                    <Typography variant="h6" color="secondary" fontWeight={700}>Calories Today</Typography>
-                  </Box>
-                  <Typography variant="h5" fontWeight={700}>{totalCalories} / {calorieTarget}</Typography>
-                </CardContent>
-              </Card>
-            </Fade>
+        {/* Quadrant Grid Section */}
+        <Grid container spacing={3} sx={{ height: { xs: 'auto', md: 480 }, mb: 2 }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', height: { md: '50%' } }}>
+            <Card elevation={2} sx={{ flex: 1, borderRadius: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 3, mb: { xs: 2, md: 0 }, boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}><EmojiEventsIcon /></Avatar>
+                <Typography variant="h6" color="primary" fontWeight={700}>Profile</Typography>
+              </Box>
+              <Typography color="text.secondary">Current Weight</Typography>
+              <Typography variant="h5" fontWeight={700} sx={{ mb: 1 }}>{profile.weight} kg</Typography>
+              <Typography color="text.secondary">Goal Weight</Typography>
+              <Typography variant="h6" fontWeight={600}>{profile.goalWeight} kg</Typography>
+            </Card>
           </Grid>
-          {/* Workouts & AI Recommendation */}
-          <Grid item xs={12} md={8}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Fade in={loaded} timeout={1200}>
-                  <Card elevation={0} sx={{ borderRadius: 4, p: 2, mb: 2, bgcolor: "#f8fafc", boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
-                    <CardContent>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}><FitnessCenterIcon /></Avatar>
-                        <Typography variant="h6" color="primary" fontWeight={700}>Last Workout</Typography>
-                      </Box>
-                      {lastWorkout ? (
-                        <List>
-                          <ListItem><ListItemText primary={`Date: ${lastWorkout.date}`} /></ListItem>
-                          {lastWorkout.exercises.map((ex, i) => (
-                            <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
-                          ))}
-                        </List>
-                      ) : <Typography color="text.secondary">No workouts logged yet.</Typography>}
-                    </CardContent>
-                  </Card>
-                </Fade>
-              </Grid>
-              <Grid item xs={12}>
-                <Fade in={loaded} timeout={1400}>
-                  <Card elevation={0} sx={{ borderRadius: 4, p: 2, bgcolor: "#e3f2fd", boxShadow: '0 2px 12px 0 #b3e5fc', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #90caf9', transform: 'translateY(-2px)' } }}>
-                    <CardContent>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}><BoltIcon /></Avatar>
-                        <Typography variant="h6" color="info.main" fontWeight={700} sx={{ flex: 1 }}>Recommendation</Typography>
-                        <IconButton onClick={() => setInfoOpen(true)} color="info" size="small"><InfoOutlinedIcon /></IconButton>
-                      </Box>
-                      {lastWorkout ? (
-                        <List>
-                          {getNextSessionRecommendation(lastWorkout, profile).map((ex, i) => (
-                            <ListItem key={i}>
-                              <ListItemText
-                                primary={ex.name + ': ' + (ex.suggestion ? `${ex.weight}kg (${ex.suggestion})` : `${ex.weight}kg (suggested)`)}
-                              />
-                            </ListItem>
-                          ))}
-                        </List>
-                      ) : <Typography color="text.secondary">Log a workout to get recommendations.</Typography>}
-                      {workoutSplit && (
-                        <Box sx={{ mt: 3 }}>
-                          <Typography variant="subtitle1" fontWeight={700} color="info.main">Suggested Workout: {workoutSplit.name}</Typography>
-                          <List>
-                            {workoutSplit.exercises.map((ex, i) => (
-                              <ListItem key={i}><ListItemText primary={ex} /></ListItem>
-                            ))}
-                          </List>
-                        </Box>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Fade>
-              </Grid>
-            </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', height: { md: '50%' } }}>
+            <Card elevation={2} sx={{ flex: 1, borderRadius: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 3, mb: { xs: 2, md: 0 }, boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Avatar sx={{ bgcolor: 'secondary.main', mr: 2 }}><RestaurantIcon /></Avatar>
+                <Typography variant="h6" color="secondary" fontWeight={700}>Calories Today</Typography>
+              </Box>
+              <Typography variant="h5" fontWeight={700}>{totalCalories} / {calorieTarget}</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', height: { md: '50%' } }}>
+            <Card elevation={2} sx={{ flex: 1, borderRadius: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 3, boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}><FitnessCenterIcon /></Avatar>
+                <Typography variant="h6" color="primary" fontWeight={700}>Last Workout</Typography>
+              </Box>
+              {lastWorkout ? (
+                <List>
+                  <ListItem><ListItemText primary={`Date: ${lastWorkout.date}`} /></ListItem>
+                  {lastWorkout.exercises.map((ex, i) => (
+                    <ListItem key={i}><ListItemText primary={`${ex.name}: ${ex.weight}kg x ${ex.reps} x ${ex.sets}`} /></ListItem>
+                  ))}
+                </List>
+              ) : <Typography color="text.secondary">No workouts logged yet.</Typography>}
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', height: { md: '50%' } }}>
+            <Card elevation={2} sx={{ flex: 1, borderRadius: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 3, boxShadow: '0 2px 12px 0 #e3e8f0', transition: '0.2s', '&:hover': { boxShadow: '0 4px 24px 0 #cfd8dc', transform: 'translateY(-2px)' } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}><BoltIcon /></Avatar>
+                <Typography variant="h6" color="info.main" fontWeight={700} sx={{ flex: 1 }}>Recommendation</Typography>
+                <IconButton onClick={() => setInfoOpen(true)} color="info" size="small"><InfoOutlinedIcon /></IconButton>
+              </Box>
+              {lastWorkout ? (
+                <List>
+                  {getNextSessionRecommendation(lastWorkout, profile).map((ex, i) => (
+                    <ListItem key={i}>
+                      <ListItemText
+                        primary={ex.name + ': ' + (ex.suggestion ? `${ex.weight}kg (${ex.suggestion})` : `${ex.weight}kg (suggested)`)}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : <Typography color="text.secondary">Log a workout to get recommendations.</Typography>}
+              {workoutSplit && (
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle1" fontWeight={700} color="info.main">Suggested Workout: {workoutSplit.name}</Typography>
+                  <List>
+                    {workoutSplit.exercises.map((ex, i) => (
+                      <ListItem key={i}><ListItemText primary={ex} /></ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
+            </Card>
           </Grid>
         </Grid>
         <Dialog open={infoOpen} onClose={() => setInfoOpen(false)} maxWidth="sm" fullWidth>
