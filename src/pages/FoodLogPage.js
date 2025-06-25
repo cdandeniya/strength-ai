@@ -5,6 +5,41 @@ import { Container, Box, Typography, TextField, Button, List, ListItem, ListItem
 
 const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
+// Curated gym/bodybuilder foods
+const GYM_FOODS = [
+  { label: "Chicken Breast (6oz)", calories: 280, category: "Poultry" },
+  { label: "Canned Tuna (1 can)", calories: 120, category: "Fish" },
+  { label: "Egg Whites (5 large)", calories: 85, category: "Eggs" },
+  { label: "Whole Eggs (2 large)", calories: 140, category: "Eggs" },
+  { label: "Oats (1 cup cooked)", calories: 150, category: "Grains" },
+  { label: "Brown Rice (1 cup cooked)", calories: 215, category: "Grains" },
+  { label: "White Rice (1 cup cooked)", calories: 205, category: "Grains" },
+  { label: "Broccoli (1 cup)", calories: 30, category: "Vegetables" },
+  { label: "Sweet Potato (1 medium)", calories: 110, category: "Vegetables" },
+  { label: "Almonds (1oz)", calories: 165, category: "Nuts" },
+  { label: "Peanut Butter (2 tbsp)", calories: 190, category: "Nuts/Spreads" },
+  { label: "Greek Yogurt (1 cup, nonfat)", calories: 100, category: "Dairy" },
+  { label: "Cottage Cheese (1/2 cup, lowfat)", calories: 90, category: "Dairy" },
+  { label: "Protein Shake (whey, 1 scoop)", calories: 120, category: "Supplements" },
+  { label: "Protein Shake (brand: Premier Protein)", calories: 160, category: "Supplements" },
+  { label: "Protein Bar (brand: Quest)", calories: 200, category: "Supplements" },
+  { label: "Ground Beef (90% lean, 4oz)", calories: 200, category: "Beef" },
+  { label: "Salmon (6oz)", calories: 367, category: "Fish" },
+  { label: "Quinoa (1 cup cooked)", calories: 220, category: "Grains" },
+  { label: "Spinach (1 cup cooked)", calories: 40, category: "Vegetables" },
+  { label: "Avocado (1 medium)", calories: 240, category: "Fruit" },
+  { label: "Banana (1 medium)", calories: 105, category: "Fruit" },
+  { label: "Apple (1 medium)", calories: 95, category: "Fruit" },
+  { label: "Rice Cakes (2 cakes)", calories: 70, category: "Grains" },
+  { label: "Skim Milk (1 cup)", calories: 90, category: "Dairy" },
+  { label: "Whole Milk (1 cup)", calories: 150, category: "Dairy" },
+  { label: "Turkey Breast (4oz)", calories: 120, category: "Poultry" },
+  { label: "Shrimp (6oz)", calories: 168, category: "Fish" },
+  { label: "Edamame (1 cup)", calories: 190, category: "Legumes" },
+  { label: "Black Beans (1/2 cup)", calories: 110, category: "Legumes" },
+  { label: "Lentils (1 cup cooked)", calories: 230, category: "Legumes" },
+];
+
 export default function FoodLogPage() {
   const [meal, setMeal] = useState({ food: "", calories: "", category: "", mealType: "Breakfast" });
   const [meals, setMeals] = useState([]);
@@ -35,17 +70,23 @@ export default function FoodLogPage() {
     try {
       const res = await fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=DEMO_KEY&query=${encodeURIComponent(query)}&pageSize=10`);
       const data = await res.json();
-      setFoodOptions(data.foods ? data.foods.map(f => ({
-        label: f.description,
-        calories: f.foodNutrients?.find(n => n.nutrientName === "Energy")?.value || "",
-        category: f.foodCategory || "",
-      })) : []);
+      setFoodOptions([
+        ...GYM_FOODS.filter(f => f.label.toLowerCase().includes(query.toLowerCase())),
+        ...(data.foods ? data.foods.map(f => ({
+          label: f.description,
+          calories: f.foodNutrients?.find(n => n.nutrientName === "Energy")?.value || "",
+          category: f.foodCategory || "",
+        })) : [])
+      ]);
     } catch (e) {
-      setFoodOptions([]);
+      setFoodOptions(GYM_FOODS.filter(f => f.label.toLowerCase().includes(query.toLowerCase())));
     } finally {
       setLoading(false);
     }
   };
+
+  // Default options for quick selection
+  const defaultFoodOptions = GYM_FOODS;
 
   const addMeal = async () => {
     if (!meal.food || !meal.calories || !meal.mealType) {
@@ -70,7 +111,7 @@ export default function FoodLogPage() {
           <Box flex={2}>
             <Autocomplete
               freeSolo
-              options={foodOptions}
+              options={foodOptions.length > 0 ? foodOptions : defaultFoodOptions}
               loading={loading}
               getOptionLabel={option => typeof option === 'string' ? option : option.label}
               value={
