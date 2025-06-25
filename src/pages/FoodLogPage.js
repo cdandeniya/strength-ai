@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
-import { collection, addDoc, getDocs, deleteDoc, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, deleteDoc, query, where, doc } from "firebase/firestore";
 import { Container, Box, Typography, TextField, Button, List, ListItem, ListItemText, Alert, Card, CardContent, Grid, Paper, Autocomplete, Select, MenuItem, InputLabel, FormControl, CircularProgress, Stack, IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -105,11 +105,16 @@ export default function FoodLogPage() {
   };
 
   const removeMeal = async (id) => {
+    if (!id) {
+      setError("Could not remove meal: missing ID.");
+      return;
+    }
     try {
-      await deleteDoc(collection(db, "users", auth.currentUser.uid, "meals"), id);
+      const mealRef = doc(db, "users", auth.currentUser.uid, "meals", id);
+      await deleteDoc(mealRef);
       setMeals(meals => meals.filter(m => m.id !== id));
     } catch (e) {
-      setError("Failed to remove meal");
+      setError("Failed to remove meal. Please try again.");
     }
   };
 
