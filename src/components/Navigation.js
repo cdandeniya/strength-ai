@@ -6,6 +6,8 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard" },
@@ -16,7 +18,7 @@ const navItems = [
   { label: "Chat", path: "/chat" },
 ];
 
-export default function Navigation() {
+export default function Navigation({ toggleDarkMode, darkMode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -40,6 +42,12 @@ export default function Navigation() {
         <ListItem button onClick={handleLogout}>
           <LogoutIcon sx={{ mr: 1 }} />
           <ListItemText primary="Logout" />
+        </ListItem>
+        <ListItem>
+          <IconButton onClick={toggleDarkMode} color="inherit">
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+          <ListItemText primary={darkMode ? "Light Mode" : "Dark Mode"} />
         </ListItem>
       </List>
     </Box>
@@ -74,6 +82,9 @@ export default function Navigation() {
             </Button>
           ))}
           <Button color="inherit" onClick={handleLogout} startIcon={<LogoutIcon />}>Logout</Button>
+          <IconButton onClick={toggleDarkMode} color="inherit" sx={{ ml: 2 }}>
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
         </Box>
       </Toolbar>
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
