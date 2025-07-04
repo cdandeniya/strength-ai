@@ -28,7 +28,7 @@ Strength AI is a modern, full-stack web application that helps users track their
 1. **Clone the repository:**
    ```bash
    git clone <your-repo-url>
-   cd ai-gym-coach-web
+   cd strength-ai
    ```
 2. **Install dependencies:**
    ```bash
